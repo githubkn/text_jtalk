@@ -2,7 +2,8 @@
 # 起動方法：
 # >python text_jtalk.py
 
-# 2020/3/31 ver 1.0 1stリリース
+# 2020/3/31 ver 1.0  1stリリース
+# 2020/4/1  ver 1.01 Open Jtalkの最大入力1024バイト対応
 
 import tkinter as tk
 from tkinter import ttk
@@ -46,8 +47,9 @@ def output_talk_wav(cmd, txt):
         @param cmd open_jtalkコマンドライン文字列
         @param t   話す内容
     """
+    txt_new = txt[0:512]                    #open jtalkの最大入力は1024バイト、最大511文字にカットする。
     res = subprocess.Popen(cmd, stdin=subprocess.PIPE)
-    res.stdin.write(txt.encode('Shift_JIS'))
+    res.stdin.write(txt_new.encode('Shift_JIS'))
     res.stdin.close()
     res.wait()
 
@@ -57,8 +59,8 @@ def b1_clicked():
     """
     cmd = get_cmd_strs(cb_str.get(), 'out.wav')
     global txt_str
-    txt_str = txt.get('1.0', tk.END)      # テキストボックス内容取得
-    txt_str = txt_str.replace("\n", " ")   # 改行をスペースに
+    txt_str = txt.get('1.0', tk.END)        # テキストボックス内容取得
+    txt_str = txt_str.replace("\n", " ")    # 改行をスペースに
     output_talk_wav(cmd, txt_str)
     play_wav('out.wav')
 
